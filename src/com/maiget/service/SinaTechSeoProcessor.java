@@ -48,6 +48,7 @@ public class SinaTechSeoProcessor implements PageProcessor {
 				int i = mDao.addInfo(bean);
 				if (i > 0) {
 					logger.info("insert successed！");
+					System.out.println("insert successed！");
 				} else {
 					logger.error("insert failed！");
 				}
@@ -61,9 +62,9 @@ public class SinaTechSeoProcessor implements PageProcessor {
 		return new CommonVar().getSite();
 	}
 
-//	public static void main(String[] args) {
-//		Spider.create(new SinaTechProcessor()).addUrl("http://tech.sina.com.cn").thread(10).run();
-//		System.out.println("爬取结束");
-//	}
+	public static void main(String[] args) {
+		Spider.create(new SinaTechProcessor()).addUrl("http://tech.sina.com.cn").thread(10).run();
+		System.out.println("爬取结束");
+	}
 
 }

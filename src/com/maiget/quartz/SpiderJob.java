@@ -6,7 +6,6 @@ import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
-import com.maiget.action.ExecAction;
 import com.maiget.service.SinaEntProcessor;
 import com.maiget.service.SinaSocietyProcessor;
 import com.maiget.service.SinaTechProcessor;
