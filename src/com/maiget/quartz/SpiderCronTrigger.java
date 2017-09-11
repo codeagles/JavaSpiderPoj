@@ -9,7 +9,6 @@ import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
 
-import us.codecraft.webmagic.Spider;
 
 public class SpiderCronTrigger {
 	
@@ -23,7 +22,7 @@ public class SpiderCronTrigger {
 			JobDetail jobDetail = JobBuilder.newJob(SpiderJob.class).withIdentity("job-1", "jgroup-1").build(); 
 			//定义触发器
 			Trigger trigger = TriggerBuilder.newTrigger().withIdentity("cronTrigger", "trigger")
-					.withSchedule(CronScheduleBuilder.cronSchedule("*/20 * * * * ?"))  
+					.withSchedule(CronScheduleBuilder.cronSchedule("0 */2 * * * ?"))  
 		              .startNow()
 		              .build();
 			

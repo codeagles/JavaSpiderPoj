@@ -28,10 +28,11 @@ public class SinaSocietyProcessor implements PageProcessor {
 	private String ENTRYREGURL = "http://news\\.sina\\.com\\.cn/society/$";
 	private static String ENTRYURL = "http://news.sina.com.cn/society/";
 
-//	public static void main(String[] args) {
-//		Spider.create(new SinaSocietyProcessor()).addUrl(ENTRYURL).thread(5).run();
-//		System.out.println("爬取结束");
-//	}
+	// public static void main(String[] args) {
+	// Spider.create(new
+	// SinaSocietyProcessor()).addUrl(ENTRYURL).thread(5).run();
+	// System.out.println("爬取结束");
+	// }
 
 	@Override
 	public void process(Page page) {
@@ -57,6 +58,7 @@ public class SinaSocietyProcessor implements PageProcessor {
 
 					int i = mDao.addInfo(bean);
 					if (i > 0) {
+						System.out.println("insert successed！");
 						logger.info("insert successed！");
 					} else {
 						logger.error("insert failed！");
