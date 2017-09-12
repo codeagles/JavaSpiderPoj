@@ -15,8 +15,8 @@ import java.sql.Statement;
 public class BaseDao {
 	protected static Connection conn = null;
 	protected static Statement stmt = null;
-//	String url = "jdbc:mysql://123.59.100.119:3306/mfu_toutiao?user=houcn&password=houcn@2017)()*&characterEncoding=UTF-8";
-	String url = "jdbc:mysql://127.0.0.1:3306/newspsider?user=root&password=root&characterEncoding=UTF-8";
+	String url = "jdbc:mysql://123.59.100.119:3306/mfu_toutiao?user=houcn&password=houcn@2017)()*&characterEncoding=UTF-8";
+//	String url = "jdbc:mysql://127.0.0.1:3306/newspsider?user=root&password=root&characterEncoding=UTF-8";
 
 	public BaseDao() {
 		try {

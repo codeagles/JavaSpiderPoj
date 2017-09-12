@@ -29,10 +29,13 @@ public class SinaTechProcessor implements PageProcessor{
 
 	@Override
 	public void process(Page page) {
+		System.out.println("进入Process");
 		if(page.getUrl().regex(ENTRYREGURL).match()){
 			urlLists = page.getHtml().xpath("//ul[@id=\'rcon1\']").links().regex(POSTURL).all();
 			page.addTargetRequests(urlLists);
+			System.out.println("UrlList添加结束");
 		}else{
+			System.out.println("判断并持久化数据库");
 			MDao dao = new MDao();
 			String title = page.getHtml().xpath("//h1[@id=\"main_title\"]/text()").get().toString();
 			String author = page.getHtml().xpath("//a[@data-sudaclick=\'media_name\']/text()").get().toString();
