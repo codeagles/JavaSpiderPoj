@@ -8,14 +8,17 @@ import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.maiget.dao.JedisCache;
 import com.maiget.dao.MDao;
 import com.maiget.model.NewsBean;
 
 import common.CommonVar;
+import redis.clients.jedis.Jedis;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.processor.PageProcessor;
+import util.MD5Util;
 
 /**
  * 
@@ -27,6 +30,7 @@ public class SinaSocietyProcessor implements PageProcessor {
 	private String POSTURL = "http://news\\.sina\\.com\\.cn/.*";
 	private String ENTRYREGURL = "http://news\\.sina\\.com\\.cn/society/$";
 	private static String ENTRYURL = "http://news.sina.com.cn/society/";
+	private Jedis jedis = JedisCache.getJedis(CommonVar.HOST);
 
 	// public static void main(String[] args) {
 	// Spider.create(new
@@ -43,7 +47,10 @@ public class SinaSocietyProcessor implements PageProcessor {
 			MDao mDao = new MDao();
 			String title = page.getHtml().xpath("//h1[@id=\"artibodyTitle\"]/text()").get().toString();
 			String author = page.getHtml().xpath("//span[@data-sudaclick =\'media_name\']/a/text()").get().toString();
-			if (!mDao.findByNews(title)) {
+			String titlemd5 = MD5Util.md5Password(title);
+			if(!jedis.sismember("md5title", titlemd5)){
+				jedis.sadd("md5title", titlemd5);
+				System.out.println("redis written");
 				if (!(title.isEmpty()) && !(author.isEmpty())) {
 					NewsBean bean = new NewsBean();
 					bean.setTitle(title);
