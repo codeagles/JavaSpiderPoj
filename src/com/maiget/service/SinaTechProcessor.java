@@ -39,9 +39,9 @@ public class SinaTechProcessor implements PageProcessor{
 			if(author.isEmpty()){
 				author = page.getHtml().xpath("//span[@class=\'source\']/text()").get().toString();
 			}
-			String titlemd5 = MD5Util.md5Password(title);
-			if(!jedis.sismember("md5title", titlemd5)){
-				jedis.sadd("md5title", titlemd5);
+			String titlemd5 = MD5Util.md5Password(title);//加密
+			if(!jedis.sismember("md5title", titlemd5)){//添加redis set集合去重
+				jedis.sadd("md5title", titlemd5);//不存在则添加
 				System.out.println("redis written");
 				if(!title.isEmpty()||!author.isEmpty()){
 					NewsBean bean = new NewsBean();
