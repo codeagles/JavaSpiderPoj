@@ -41,14 +41,11 @@ public class SinaSocietyProcessor implements PageProcessor {
 	@Override
 	public void process(Page page) {
 		//进入
-		System.out.println("进入Process");
 		if (page.getUrl().regex(ENTRYREGURL).match()) {
 			urlLists = page.getHtml().xpath("//div[@class=\'blk122\']").links().regex(POSTURL).all();
 			page.addTargetRequests(urlLists);
-			System.out.println("UrlList添加结束");
 		} else {
 			//判断
-			System.out.println("判断并持久化数据库");
 			MDao mDao = new MDao();
 			String title = page.getHtml().xpath("//h1[@id=\"artibodyTitle\"]/text()").get().toString();
 			String author = page.getHtml().xpath("//span[@data-sudaclick =\'media_name\']/a/text()").get().toString();
@@ -84,7 +81,6 @@ public class SinaSocietyProcessor implements PageProcessor {
 
 	@Override
 	public Site getSite() {
-		System.out.println("Create the site");
 		return new CommonVar().getSite();
 	}
 
