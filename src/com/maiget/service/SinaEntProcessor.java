@@ -36,15 +36,12 @@ public class SinaEntProcessor implements PageProcessor {
 
 	@Override
 	public void process(Page page) {
-		System.out.println("进入Process");
 		MDao mDao = new MDao();
 		if (page.getUrl().regex(ENTRYREGURL).match()) {
 			urlLists = page.getHtml().xpath("//ul[@class=\'module_common_list clearfix\']").links().regex(POSTURL)
 					.all();
 			page.addTargetRequests(urlLists);
-			System.out.println("UrlList添加结束");
 		} else {
-			System.out.println("判断并持久化数据库");
 			String title = page.getHtml().xpath("//h1[@id=\"main_title\"]/text()").get().toString();
 			String author = page.getHtml().xpath("//a[@data-sudaclick =\'media_name\']/text()").get().toString();
 			String titlemd5 = MD5Util.md5Password(title);
