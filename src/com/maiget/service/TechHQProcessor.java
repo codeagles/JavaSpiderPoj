@@ -1,22 +1,14 @@
 package com.maiget.service;
 
-import java.sql.Date;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.xml.xpath.XPath;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.google.common.collect.Lists;
-import com.maiget.dao.BaseDao;
 import com.maiget.dao.MDao;
 import com.maiget.model.NewsBean;
-
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.processor.PageProcessor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TechHQProcessor implements PageProcessor{
 	
@@ -43,7 +35,7 @@ public class TechHQProcessor implements PageProcessor{
 			bean.setAuthor("环球科技");
 			bean.setOrigin("环球科技");
 			bean.setCategory("科技");
-			page.getHtml().xpath("//div[@id=\'text\']").get();
+			bean.setContent(page.getHtml().xpath("//div[@id=\'text\']").get());
 			bean.setNewstime(page.getHtml().xpath("//strong[@class=\"timeSummary\"]/text()").get());
 			bean.setImg("");
 			int i = mdao.addInfo(bean);
@@ -51,8 +43,7 @@ public class TechHQProcessor implements PageProcessor{
 				System.out.println("插入成功");
 			}
 		}
-		System.out.println("====");
-		
+
 	}
 	public static void main(String[] args) {
 		Spider.create(new TechHQProcessor()).addUrl("http://tech.huanqiu.com").run();
