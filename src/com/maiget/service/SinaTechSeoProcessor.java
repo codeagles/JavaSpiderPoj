@@ -1,20 +1,16 @@
 package com.maiget.service;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import com.maiget.dao.MDao;
 import com.maiget.model.NewsBean;
-import com.sun.jna.platform.win32.User32Util;
-
 import common.CommonVar;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
-import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.processor.PageProcessor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 
@@ -62,9 +58,9 @@ public class SinaTechSeoProcessor implements PageProcessor {
 		return new CommonVar().getSite();
 	}
 
-	public static void main(String[] args) {
-		Spider.create(new SinaTechProcessor()).addUrl("http://tech.sina.com.cn").thread(10).run();
-		System.out.println("爬取结束");
-	}
+//	public static void main(String[] args) {
+//		Spider.create(new SinaTechProcessor()).addUrl("http://tech.sina.com.cn").thread(10).run();
+//		System.out.println("爬取结束");
+//	}
 
 }

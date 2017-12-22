@@ -1,17 +1,16 @@
 package com.maiget.quartz;
 
-import java.util.Date;
-
-import org.quartz.Job;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
-
 import com.maiget.service.SinaEntProcessor;
 import com.maiget.service.SinaSocietyProcessor;
 import com.maiget.service.SinaTechProcessor;
-
+import com.maiget.service.TencentTechProcessor;
+import org.quartz.Job;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
 import us.codecraft.webmagic.Spider;
 import util.DateUtils;
+
+import java.util.Date;
 
 
 public class SpiderJob implements Job{
@@ -22,6 +21,7 @@ public class SpiderJob implements Job{
 		Spider.create(new SinaSocietyProcessor()).addUrl("http://news.sina.com.cn/society/").run();
 		Spider.create(new SinaTechProcessor()).addUrl("http://tech.sina.com.cn").run();
 		Spider.create(new SinaEntProcessor()).addUrl("http://ent.sina.com.cn/weibo/").run();
+		Spider.create(new TencentTechProcessor()).addUrl("http://ent.sina.com.cn/weibo/").run();
 		System.out.println("爬取结束，结束时间："+DateUtils.formatDateToString(new Date()));
 		
 	}

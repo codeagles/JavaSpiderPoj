@@ -5,7 +5,6 @@ import com.maiget.model.NewsBean;
 import common.CommonVar;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
-import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.processor.PageProcessor;
 
 import java.util.ArrayList;
@@ -58,8 +57,8 @@ public class TencentTechProcessor implements PageProcessor{
 	}
 	
 	
-	public static void main(String[] args) {
-		Spider.create(new TencentTechProcessor()).addUrl(ENTRYURL).run();
-		System.out.println("爬取结束");
-	}
+//	public static void main(String[] args) {
+//		Spider.create(new TencentTechProcessor()).addUrl(ENTRYURL).run();
+//		System.out.println("爬取结束");
+//	}
 }
