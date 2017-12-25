@@ -9,7 +9,6 @@ import org.apache.commons.logging.LogFactory;
 import redis.clients.jedis.Jedis;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
-import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.processor.PageProcessor;
 import util.MD5Util;
 
@@ -27,10 +26,10 @@ public class SinaEntProcessor implements PageProcessor {
 	private Jedis jedis = JedisCache.getJedis(CommonVar.HOST);
 
 	
-	public static void main(String[] args) {
-		Spider.create(new SinaEntProcessor()).addUrl(ENTRYURL).thread(1).run();
-		System.out.println("爬取结束");
-	}
+//	public static void main(String[] args) {
+//		Spider.create(new SinaEntProcessor()).addUrl(ENTRYURL).thread(1).run();
+//		System.out.println("爬取结束");
+//	}
 
 	@Override
 	public void process(Page page) {

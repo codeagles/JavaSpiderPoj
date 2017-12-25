@@ -1,19 +1,19 @@
 package com.maiget.service;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.maiget.dao.JedisCache;
 import com.maiget.dao.MDao;
 import com.maiget.model.NewsBean;
-
 import common.CommonVar;
 import redis.clients.jedis.Jedis;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
-import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.processor.PageProcessor;
 import util.MD5Util;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * 
@@ -34,12 +34,12 @@ public class SinaTechProcessor implements PageProcessor{
 			page.addTargetRequests(urlLists);
 		}else{
 			MDao dao = new MDao();
-			String title = page.getHtml().xpath("//h1[@id=\"main_title\"]/text()").get().toString();
-			String author = page.getHtml().xpath("//a[@data-sudaclick=\'media_name\']/text()").get().toString();
+			String title = page.getHtml().xpath("//h1[@class=\"main-title\"]/text()").get();
+			String author = page.getHtml().xpath("//a[@class =\'source ent-source\']/text()").get();
 			if(author.isEmpty()){
 				author = page.getHtml().xpath("//span[@class=\'source\']/text()").get().toString();
 			}
-			String titlemd5 = MD5Util.md5Password(title);//加密
+			String titlemd5 = MD5Util.md5Str(title);//加密
 			if(!jedis.sismember("md5title", titlemd5)){//添加redis set集合去重
 				jedis.sadd("md5title", titlemd5);//不存在则添加
 				System.out.println("redis written");
@@ -49,11 +49,13 @@ public class SinaTechProcessor implements PageProcessor{
 					bean.setAuthor(author);
 					bean.setCategory("科技");
 					bean.setOrigin("新浪科技");
-					bean.setNewstime(page.getHtml().xpath("//span[@class=\'titer\']/text()").get());
+					bean.setNewstime(page.getHtml().xpath("//span[@class=\'date\']/text()").get());
 					bean.setContent(page.getHtml().xpath("//div[@id=\'artibody\']").get());
 					String imgUrl = page.getHtml().xpath("//div[@id=\'artibody\']/div[@class=\'img_wrapper\']")
 							.css("img", "src").get();
 					bean.setImg(imgUrl);
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:ss:mm");
+					bean.setCreatetime(sdf.format(new Date()));
 					int i = dao.addInfo(bean);
 					if (i > 0) {
 						System.out.println("insert successed！");
@@ -71,8 +73,8 @@ public class SinaTechProcessor implements PageProcessor{
 	}
 
 //	public static void main(String[] args) {
-//		Spider.create(new SinaTechProcessor()).addUrl(ENTRYURL).run();
-//		System.out.println("爬取结束，共爬取"+total+"个数据，有效数据为"+num+"个。");
+//		Spider.create(new SinaTechProcessor()).addUrl(ENTRYURL).thread(3).run();
+////		System.out.println("爬取结束，共爬取"+total+"个数据，有效数据为"+num+"个。");
 //	}
 
 }
