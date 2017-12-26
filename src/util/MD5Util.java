@@ -9,7 +9,7 @@ public class MD5Util {
 //		String url=MD5Util.md5Password("asd");
 //		System.out.println(url);
 //	}
-	  public static String md5Password(String password) {  
+	  public static String md5Str(String password) {
 		  
 	        try {  
 	            // 得到一个信息摘要器  
