@@ -51,7 +51,7 @@ public class WeChatProcessorTest implements PageProcessor {
                 NewsBean bean = new NewsBean();
                 bean.setAuthor(author);
                 bean.setTitle(title);
-                bean.setCategory("a");
+                bean.setCategory("aa");
                 bean.setOrigin("搜狗微信");
                 bean.setNewstime(newstime);
                 bean.setImg(img);
