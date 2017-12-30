@@ -75,6 +75,7 @@ public class WeChatProcessorTest implements PageProcessor {
     }
 
     public static void main(String[] args) {
+
         Spider.create(new WeChatProcessorTest()).addUrl(ENTRYURL + "pc_0/1.html").thread(2).run();
     }
 }
