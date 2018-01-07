@@ -67,7 +67,6 @@ public class WeChatProcessorTest implements PageProcessor {
 
         }
     }
-
     @Override
     public Site getSite() {
         return new CommonVar().getSite();
