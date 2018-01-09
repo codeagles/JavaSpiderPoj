@@ -24,7 +24,7 @@ public class DiFangNewsProcessor implements PageProcessor {
     public void process(Page page) {
         page.addTargetRequest(ENTRYREGURL);
         urlLists = page.getHtml().xpath("//ul[@class=\'clearfix inner1000\']").links().all();
-        System.out.println("aaaa"+ urlLists.size());
+
     }
 
     @Override
@@ -33,12 +33,8 @@ public class DiFangNewsProcessor implements PageProcessor {
     }
 
 
-
-
     public static void main(String[] args) {
        Spider.create(new DiFangNewsProcessor()).addUrl(ENTRYURL).thread(2).run();//抓取页面
     }
-
-
 
 }
