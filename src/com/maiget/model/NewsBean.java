@@ -1,9 +1,5 @@
 package com.maiget.model;
 
-import java.util.Date;
-
-
-
 public class NewsBean {
 	
 	private String title;
@@ -21,12 +17,16 @@ public class NewsBean {
 	private String origin;
 	
 	private String createtime;
-	
+
 	private int flag;
 	
 	private int weight;
 	
 	private int status;
+
+	private String place;
+
+
 
 	public String getTitle() {
 		return title;
@@ -36,8 +36,13 @@ public class NewsBean {
 		this.title = title;
 	}
 
-	
+	public String getPlace() {
+		return place;
+	}
 
+	public void setPlace(String place) {
+		this.place = place;
+	}
 	public String getNewstime() {
 		return newstime;
 	}

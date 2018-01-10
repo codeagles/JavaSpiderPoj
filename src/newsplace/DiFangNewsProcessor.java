@@ -20,11 +20,21 @@ public class DiFangNewsProcessor implements PageProcessor {
     private String POSTURL = "http://difang.gmw.cn/";
     private MDao mdao = new MDao();
 
+    private String[] array ={"/hb/","/ah/","/bj/","/fj/","/gd/","/gs/","/gx/","/gz/","/ha/","/he/","/hi/","/hlj/","/hn/","/jl/","/js/","/jx/","/ln/","/nb/","/nx/","/qd/","/qh/","/sc/","/sd/","/sh/","/sn/","/sx/","/sz/","/tj/","/xiamen/","/nmg/","/yn/","/zj/"};
+
     @Override
     public void process(Page page) {
         page.addTargetRequest(ENTRYREGURL);
+        String[] array = new String[34];
         urlLists = page.getHtml().xpath("//ul[@class=\'clearfix inner1000\']").links().all();
-
+        int i =0;
+        for(String str:urlLists){
+             array[i] = str.substring(20);
+             i++;
+        }
+        for(i =0;i<array.length;i++){
+            System.out.printf("\""+array[i]+"\",");
+        }
     }
 
     @Override
