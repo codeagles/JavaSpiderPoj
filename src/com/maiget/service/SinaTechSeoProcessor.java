@@ -1,5 +1,6 @@
 package com.maiget.service;
 
+import com.maiget.dao.ESDao;
 import com.maiget.dao.JedisCache;
 import com.maiget.dao.MDao;
 import com.maiget.model.NewsBean;
@@ -13,6 +14,7 @@ import us.codecraft.webmagic.processor.PageProcessor;
 import util.DateUtils;
 import util.MD5Util;
 
+import java.net.UnknownHostException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -54,7 +56,7 @@ public class SinaTechSeoProcessor implements PageProcessor {
                     try {
                         bean.setNewstime(DateUtils.dateToStamp(newstime));
                     } catch (ParseException e) {
-                        e.printStackTrace();
+                        bean.setNewstime(String.valueOf(new Date().getTime()));
                     }
                     bean.setCategory("科技");
                     bean.setOrigin("新浪科技");
@@ -62,13 +64,17 @@ public class SinaTechSeoProcessor implements PageProcessor {
                     String imgUrl = page.getHtml().xpath("//div[@id=\'artibody\']/div[@class =\'img_wrapper\']").css("img", "src").get();
                     bean.setImg(imgUrl);
                     bean.setCreatetime(new Date().getTime());
-                    MDao mDao = new MDao();
-                    int i = mDao.addInfo(bean);
-                    if (i > 0) {
-                        logger.info("insert successed！");
-                        System.out.println("insert successed！");
-                    } else {
-                        logger.error("insert failed！");
+                    ESDao es = new ESDao();
+                    try {
+                        es.insert(bean);
+                    } catch (UnknownHostException e) {
+                        MDao mDao = new MDao();
+                        int i = mDao.addInfo(bean);
+                        if (i > 0) {
+                            System.out.println("insert successed！");
+                        } else {
+                            System.out.println("failed！");
+                        }
                     }
                 }
             }

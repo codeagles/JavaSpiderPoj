@@ -1,5 +1,6 @@
 package com.maiget.service;
 
+import com.maiget.dao.ESDao;
 import com.maiget.dao.JedisCache;
 import com.maiget.dao.MDao;
 import com.maiget.model.NewsBean;
@@ -11,6 +12,7 @@ import us.codecraft.webmagic.processor.PageProcessor;
 import util.DateUtils;
 import util.MD5Util;
 
+import java.net.UnknownHostException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -55,7 +57,7 @@ public class SinaTechProcessor implements PageProcessor{
 					try {
 						bean.setNewstime(DateUtils.dateToStamp(newstime));
 					} catch (ParseException e) {
-						e.printStackTrace();
+						bean.setNewstime(String.valueOf(new Date().getTime()));
 					}
 					bean.setContent(page.getHtml().xpath("//div[@id=\'artibody\']").get());
 					String imgUrl = page.getHtml().xpath("//div[@id=\'artibody\']/div[@class=\'img_wrapper\']")
@@ -63,11 +65,17 @@ public class SinaTechProcessor implements PageProcessor{
 					bean.setImg(imgUrl);
 					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:ss:mm");
 					bean.setCreatetime(new Date().getTime());
-					int i = dao.addInfo(bean);
-					if (i > 0) {
-						System.out.println("insert successed！");
-					} else {
-						System.out.println("inset failed");
+					ESDao es = new ESDao();
+					try {
+						es.insert(bean);
+					} catch (UnknownHostException e) {
+						MDao mDao = new MDao();
+						int i = mDao.addInfo(bean);
+						if (i > 0) {
+							System.out.println("insert successed！");
+						} else {
+							System.out.println("failed！");
+						}
 					}
 				}
 			}

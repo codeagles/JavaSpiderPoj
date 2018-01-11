@@ -1,5 +1,6 @@
 package wechat.service;
 
+import com.maiget.dao.ESDao;
 import com.maiget.dao.MDao;
 import com.maiget.model.NewsBean;
 import common.CommonVar;
@@ -9,6 +10,7 @@ import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.processor.PageProcessor;
 import util.DateUtils;
 
+import java.net.UnknownHostException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -90,16 +92,22 @@ public class WeChatProcessor implements PageProcessor {
                 try {
                     bean.setNewstime(DateUtils.dateToStamp(newstime));
                 } catch (ParseException e) {
-                    e.printStackTrace();
+                    bean.setNewstime(String.valueOf(new Date().getTime()));
                 }
                 bean.setImg(img);
                 bean.setContent(content);
                 bean.setCreatetime(new Date().getTime());
-                int i = mdao.addInfo(bean);
-                if (i > 0) {
-                    System.out.println("insert successed！");
-                } else {
-                    System.out.println("insert failed!");
+                ESDao es = new ESDao();
+                try {
+                    es.insert(bean);
+                } catch (UnknownHostException e) {
+                    MDao mDao = new MDao();
+                    int i = mDao.addInfo(bean);
+                    if (i > 0) {
+                        System.out.println("insert successed！");
+                    } else {
+                        System.out.println("failed！");
+                    }
                 }
             }
 

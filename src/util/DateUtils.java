@@ -25,10 +25,14 @@ public class DateUtils {
 		String hour = String.valueOf(new Date().getHours());
 		String min = String.valueOf(new Date().getMinutes());
 		String second = String.valueOf(new Date().getSeconds());
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");;
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		if(s.contains("年")&&s.contains("月")&&s.contains("日")&&s.contains(":")){
 			if(s.contains("日 ")){
-				simpleDateFormat = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");
+				if(s.split(":").length <= 2){
+					simpleDateFormat = new SimpleDateFormat("yyyy年MM月dd日 HH:mm");
+				}else{
+					simpleDateFormat = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");
+				}
 			}else{
 				simpleDateFormat = new SimpleDateFormat("yyyy年MM月dd日HH:mm:ss");
 			}
@@ -60,7 +64,7 @@ public class DateUtils {
 		return res;
 	}
 
-//	public static void main(String[] args) throws ParseException {
-//		System.out.printf(DateUtils.dateToStamp("2017-12-27"));
-//	}
+	public static void main(String[] args) throws ParseException {
+		System.out.printf(DateUtils.dateToStamp("2017年12月27日 09:12"));
+	}
 }

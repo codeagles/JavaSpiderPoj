@@ -1,5 +1,6 @@
 package com.maiget.service;
 
+import com.maiget.dao.ESDao;
 import com.maiget.dao.JedisCache;
 import com.maiget.dao.MDao;
 import com.maiget.model.NewsBean;
@@ -11,6 +12,7 @@ import us.codecraft.webmagic.processor.PageProcessor;
 import util.DateUtils;
 import util.MD5Util;
 
+import java.net.UnknownHostException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -52,15 +54,23 @@ public class TechHQProcessor implements PageProcessor {
                     try {
                         bean.setNewstime(DateUtils.dateToStamp(newstime));
                     } catch (ParseException e) {
-                        e.printStackTrace();
+                        bean.setNewstime(String.valueOf(new Date().getTime()));
                     }
                     String imgUrl = page.getHtml().xpath("//div[@id=\'text\']")
                             .css("img", "src").get();
                     bean.setCreatetime(new Date().getTime());
                     bean.setImg(imgUrl);
-                    int i = mdao.addInfo(bean);
-                    if (i > 0) {
-                        System.out.println("插入成功");
+                    ESDao es = new ESDao();
+                    try {
+                        es.insert(bean);
+                    } catch (UnknownHostException e) {
+                        MDao mDao = new MDao();
+                        int i = mDao.addInfo(bean);
+                        if (i > 0) {
+                            System.out.println("insert successed！");
+                        } else {
+                            System.out.println("failed！");
+                        }
                     }
                 }
             }
