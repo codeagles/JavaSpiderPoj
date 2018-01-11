@@ -10,9 +10,12 @@ import redis.clients.jedis.Jedis;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.processor.PageProcessor;
+import util.DateUtils;
 import util.MD5Util;
 
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -44,6 +47,7 @@ public class SinaSocietyProcessor implements PageProcessor {
 			MDao mDao = new MDao();
 			String title = page.getHtml().xpath("//h1[@class=\"main-title\"]/text()").get().toString();
 			String author = page.getHtml().xpath("//a[@class =\'source\']/text()").get().toString();
+			String newstime = page.getHtml().xpath("//span[@class =\'date\']/text()").get();
 			String titlemd5 = MD5Util.md5Str(title);
 			if(!jedis.sismember("md5title", titlemd5)){
 				jedis.sadd("md5title", titlemd5);
@@ -52,14 +56,18 @@ public class SinaSocietyProcessor implements PageProcessor {
 					NewsBean bean = new NewsBean();
 					bean.setTitle(title);
 					bean.setAuthor(author);
-					bean.setNewstime(page.getHtml().xpath("//span[@class =\'date\']/text()").get());
+					try {
+						bean.setNewstime(DateUtils.dateToStamp(newstime));
+					} catch (ParseException e) {
+						e.printStackTrace();
+					}
 					bean.setCategory("社会");
 					bean.setOrigin("新浪新闻中心");
 					bean.setContent(page.getHtml().xpath("//div[@id=\'article\']").get());
 					String imgUrl = page.getHtml().xpath("//div[@id=\'article\']/div[@class =\'img_wrapper\']")
 							.css("img", "src").get();
 					bean.setImg(imgUrl);
-
+					bean.setCreatetime(new Date().getTime());
 					int i = mDao.addInfo(bean);
 					if (i > 0) {
 						System.out.println("insert successed！");

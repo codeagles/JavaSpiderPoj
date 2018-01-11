@@ -16,7 +16,7 @@ public class NewsBean {
 	
 	private String origin;
 	
-	private String createtime;
+	private long createtime;
 
 	private int flag;
 	
@@ -93,16 +93,17 @@ public class NewsBean {
 
 	
 
-	public String getCreatetime() {
-		return createtime;
-	}
-
-	public void setCreatetime(String createtime) {
-		this.createtime = createtime;
-	}
 
 	public int getFlag() {
 		return flag;
+	}
+
+	public long getCreatetime() {
+		return createtime;
+	}
+
+	public void setCreatetime(long createtime) {
+		this.createtime = createtime;
 	}
 
 	public void setFlag(int flag) {

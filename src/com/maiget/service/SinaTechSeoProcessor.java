@@ -10,9 +10,10 @@ import redis.clients.jedis.Jedis;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.processor.PageProcessor;
+import util.DateUtils;
 import util.MD5Util;
 
-import java.text.SimpleDateFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -39,6 +40,7 @@ public class SinaTechSeoProcessor implements PageProcessor {
             String author = page.getHtml().xpath("//a[@class =\'source ent-source\']/text()").get();
             String title = page.getHtml().xpath("//h1/text()").get().toString();
             String titlemd5 = MD5Util.md5Str(title);
+            String newstime = page.getHtml().xpath("//span[@class =\'date\']/text()").get();
             if ("".equals(author) || null == author) {
                 author = page.getHtml().xpath("//span[@class =\'source\']/text()").get();
             }
@@ -49,14 +51,17 @@ public class SinaTechSeoProcessor implements PageProcessor {
                     NewsBean bean = new NewsBean();
                     bean.setTitle(page.getHtml().xpath("//h1/text()").get());
                     bean.setAuthor(author);
-                    bean.setNewstime(page.getHtml().xpath("//span[@class =\'date\']/text()").get());
+                    try {
+                        bean.setNewstime(DateUtils.dateToStamp(newstime));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
                     bean.setCategory("科技");
                     bean.setOrigin("新浪科技");
                     bean.setContent(page.getHtml().xpath("//div[@id=\'artibody\']").get());
                     String imgUrl = page.getHtml().xpath("//div[@id=\'artibody\']/div[@class =\'img_wrapper\']").css("img", "src").get();
                     bean.setImg(imgUrl);
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:ss:mm");
-                    bean.setCreatetime(sdf.format(new Date()));
+                    bean.setCreatetime(new Date().getTime());
                     MDao mDao = new MDao();
                     int i = mDao.addInfo(bean);
                     if (i > 0) {

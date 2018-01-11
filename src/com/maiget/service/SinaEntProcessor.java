@@ -10,8 +10,10 @@ import redis.clients.jedis.Jedis;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.processor.PageProcessor;
+import util.DateUtils;
 import util.MD5Util;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -33,7 +35,6 @@ public class SinaEntProcessor implements PageProcessor {
 
 	@Override
 	public void process(Page page) {
-
 		if (page.getUrl().regex(ENTRYREGURL).match()) {
 			urlLists = page.getHtml().xpath("//ul[@class=\'module_common_list clearfix\']").links().regex(POSTURL)
 					.all();
@@ -41,6 +42,7 @@ public class SinaEntProcessor implements PageProcessor {
 		} else {
 			String title = page.getHtml().xpath("//h1[@class=\"main-title\"]/text()").get();
 			String author = page.getHtml().xpath("//a[@data-sudaclick =\'content_media_p\']/text()").get();
+			String newstime = page.getHtml().xpath("//span[@class =\'date\']/text()").get();
 			String titlemd5 = MD5Util.md5Str(title);
 			if(!jedis.sismember("md5title", titlemd5)){
 				jedis.sadd("md5title", titlemd5);
@@ -48,7 +50,11 @@ public class SinaEntProcessor implements PageProcessor {
 					NewsBean bean = new NewsBean();
 					bean.setTitle(title);
 					bean.setAuthor(author);
-					bean.setNewstime(page.getHtml().xpath("//span[@class =\'date\']/text()").get());
+					try {
+						bean.setNewstime(DateUtils.dateToStamp(newstime));
+					} catch (ParseException e) {
+						e.printStackTrace();
+					}
 					bean.setCategory("娱乐");
 					bean.setOrigin("新浪娱乐");
 					bean.setContent(page.getHtml().xpath("//div[@id=\'artibody\']").get());
@@ -56,7 +62,7 @@ public class SinaEntProcessor implements PageProcessor {
 							.css("img", "src").get();
 					bean.setImg(imgUrl);
 					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:ss:mm");
-					bean.setCreatetime(sdf.format(new Date()));
+					bean.setCreatetime(new Date().getTime());
 					MDao mDao = new MDao();
 					int i = mDao.addInfo(bean);
 					if (i > 0) {

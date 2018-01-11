@@ -8,8 +8,10 @@ import redis.clients.jedis.Jedis;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.processor.PageProcessor;
+import util.DateUtils;
 import util.MD5Util;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -39,6 +41,7 @@ public class SinaTechProcessor implements PageProcessor{
 			if(author.isEmpty()){
 				author = page.getHtml().xpath("//span[@class=\'source\']/text()").get().toString();
 			}
+			String newstime = page.getHtml().xpath("//span[@class=\'date\']/text()").get();
 			String titlemd5 = MD5Util.md5Str(title);//加密
 			if(!jedis.sismember("md5title", titlemd5)){//添加redis set集合去重
 				jedis.sadd("md5title", titlemd5);//不存在则添加
@@ -49,13 +52,17 @@ public class SinaTechProcessor implements PageProcessor{
 					bean.setAuthor(author);
 					bean.setCategory("科技");
 					bean.setOrigin("新浪科技");
-					bean.setNewstime(page.getHtml().xpath("//span[@class=\'date\']/text()").get());
+					try {
+						bean.setNewstime(DateUtils.dateToStamp(newstime));
+					} catch (ParseException e) {
+						e.printStackTrace();
+					}
 					bean.setContent(page.getHtml().xpath("//div[@id=\'artibody\']").get());
 					String imgUrl = page.getHtml().xpath("//div[@id=\'artibody\']/div[@class=\'img_wrapper\']")
 							.css("img", "src").get();
 					bean.setImg(imgUrl);
 					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:ss:mm");
-					bean.setCreatetime(sdf.format(new Date()));
+					bean.setCreatetime(new Date().getTime());
 					int i = dao.addInfo(bean);
 					if (i > 0) {
 						System.out.println("insert successed！");

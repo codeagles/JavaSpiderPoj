@@ -8,9 +8,10 @@ import redis.clients.jedis.Jedis;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.processor.PageProcessor;
+import util.DateUtils;
 import util.MD5Util;
 
-import java.text.SimpleDateFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -38,6 +39,7 @@ public class TechHQProcessor implements PageProcessor {
         } else {
             NewsBean bean = new NewsBean();
             String title = page.getHtml().xpath("//h1/text()").get();
+            String newstime = page.getHtml().xpath("//strong[@class=\"timeSummary\"]/text()").get();
             String titlemd5 = MD5Util.md5Str(title);
             if (!jedis.sismember("md5title", titlemd5)) {//添加redis set集合去重
                 jedis.sadd("md5title", titlemd5);//不存在则添加
@@ -47,11 +49,14 @@ public class TechHQProcessor implements PageProcessor {
                     bean.setOrigin("环球科技");
                     bean.setCategory("科技");
                     bean.setContent(page.getHtml().xpath("//div[@id=\'text\']").get());
-                    bean.setNewstime(page.getHtml().xpath("//strong[@class=\"timeSummary\"]/text()").get());
+                    try {
+                        bean.setNewstime(DateUtils.dateToStamp(newstime));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
                     String imgUrl = page.getHtml().xpath("//div[@id=\'text\']")
                             .css("img", "src").get();
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:ss:mm");
-                    bean.setCreatetime(sdf.format(new Date()));
+                    bean.setCreatetime(new Date().getTime());
                     bean.setImg(imgUrl);
                     int i = mdao.addInfo(bean);
                     if (i > 0) {

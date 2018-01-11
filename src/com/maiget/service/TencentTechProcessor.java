@@ -1,7 +1,7 @@
 package com.maiget.service;
 
+import com.maiget.dao.ESDao;
 import com.maiget.dao.JedisCache;
-import com.maiget.dao.MDao;
 import com.maiget.model.NewsBean;
 import common.CommonVar;
 import redis.clients.jedis.Jedis;
@@ -9,9 +9,11 @@ import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.processor.PageProcessor;
+import util.DateUtils;
 import util.MD5Util;
 
-import java.text.SimpleDateFormat;
+import java.net.UnknownHostException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -30,36 +32,42 @@ public class TencentTechProcessor implements PageProcessor{
 					.regex(POSTURL).all();
 			page.addTargetRequests(urlLists);
 		}else{
-			MDao mdao = new MDao();
+//			MDao mdao = new MDao();
+			ESDao es = new ESDao();
+
 			String title = page.getHtml().xpath("//h1/text()").get().toString();
 			String titlemd5 = MD5Util.md5Str(title);
 			String author = page.getHtml().xpath("//span[@class=\'a_source\']/text()").get();
 			String newstime = page.getHtml().xpath("//span[@class=\'a_time\']/text()").get();
 			String content = page.getHtml().xpath("//div[@class=\'Cnt-Main-Article-QQ\']").get();
 			String img = page.getHtml().xpath("//div[@class=\'Cnt-Main-Article-QQ\']/p").css("img", "src").get();
-			if(!jedis.sismember("md5title", titlemd5)) {//添加redis set集合去重
-				jedis.sadd("md5title", titlemd5);//不存在则添加
+//			if(!jedis.sismember("md5title", titlemd5)) {//添加redis set集合去重
+//				jedis.sadd("md5title", titlemd5);//不存在则添加
 				if (!title.isEmpty() && !author.isEmpty()) {
 					NewsBean bean = new NewsBean();
 					bean.setAuthor(author);
 					bean.setTitle(title);
 					bean.setCategory("科技");
 					bean.setOrigin("腾讯科技");
-					bean.setNewstime(newstime);
+					try {
+						bean.setNewstime(DateUtils.dateToStamp(newstime));
+					} catch (ParseException e) {
+						e.printStackTrace();
+					}
 					bean.setImg(img);
 					bean.setContent(content);
-					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:ss:mm");
-					bean.setCreatetime(sdf.format(new Date()));
-					int i = mdao.addInfo(bean);
-					if (i > 0) {
-						System.out.println("insert successed！");
-					} else {
-						System.out.println("insert failed!");
+					bean.setCreatetime(new Date().getTime());
+//					int i = mdao.addInfo(bean);
+					try {
+						es.insert(bean);
+					} catch (UnknownHostException e) {
+						e.printStackTrace();
 					}
-				}
 
+				}
+//
 			}
-		}
+//		}
 	}
 
 	@Override

@@ -7,8 +7,9 @@ import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.processor.PageProcessor;
+import util.DateUtils;
 
-import java.text.SimpleDateFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -46,17 +47,20 @@ public class WeChatProcessorTest implements PageProcessor {
             //String content = page.getHtml().xpath("//div[@id=\'img-content\']").get(); //带有头部标题，缺点：多了一堆js代码，优势：可直接当做文章用。
             content += content.replace("data-src", "src");
             String img = page.getHtml().xpath("//div[@id=\'js_content\']/p").css("img", "data-src").get();
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:ss:mm");
             if (!title.isEmpty() && !author.isEmpty()) {
                 NewsBean bean = new NewsBean();
                 bean.setAuthor(author);
                 bean.setTitle(title);
                 bean.setCategory("aa");
                 bean.setOrigin("搜狗微信");
-                bean.setNewstime(newstime);
+                try {
+                    bean.setNewstime(DateUtils.dateToStamp(newstime));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
                 bean.setImg(img);
                 bean.setContent(content);
-                bean.setCreatetime(sdf.format(new Date()));
+                bean.setCreatetime(new Date().getTime());
                 int i = mdao.addInfo(bean);
                 if (i > 0) {
                     System.out.println("insert successed！");

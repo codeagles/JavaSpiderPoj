@@ -7,7 +7,9 @@ import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.processor.PageProcessor;
+import util.DateUtils;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -85,10 +87,14 @@ public class WeChatProcessor implements PageProcessor {
                 bean.setTitle(title);
                 bean.setCategory(categroyList.get(categroy));
                 bean.setOrigin("搜狗微信");
-                bean.setNewstime(newstime);
+                try {
+                    bean.setNewstime(DateUtils.dateToStamp(newstime));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
                 bean.setImg(img);
                 bean.setContent(content);
-                bean.setCreatetime(sdf.format(new Date()));
+                bean.setCreatetime(new Date().getTime());
                 int i = mdao.addInfo(bean);
                 if (i > 0) {
                     System.out.println("insert successed！");
