@@ -21,11 +21,9 @@ public class ESDao {
                 .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("10.11.8.250"), 9300));
         String json = JSONUtil.model2Json(bean);
         IndexResponse response = client.prepareIndex("mfu_toutiao", "mg_article").setSource(json).get();
-        String index = response.getIndex();
         if (response.isCreated()) {
-            System.out.println("创建成功!");
+            System.out.println("ES创建成功!");
         }
         client.close();
     }
-
 }
