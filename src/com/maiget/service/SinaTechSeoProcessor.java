@@ -50,6 +50,8 @@ public class SinaTechSeoProcessor implements PageProcessor {
                     String titlemd5 = MD5Util.md5Str(title);
                     if (!jedis.sismember("md5title", titlemd5)) {
                         jedis.sadd("md5title", titlemd5);
+                        System.out.println("redis written");
+
                         NewsBean bean = new NewsBean();
                         bean.setTitle(page.getHtml().xpath("//h1/text()").get());
                         bean.setAuthor(author);

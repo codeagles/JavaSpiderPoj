@@ -45,6 +45,7 @@ public class TencentTechProcessor implements PageProcessor {
                     String titlemd5 = MD5Util.md5Str(title);
                     if (!jedis.sismember("md5title", titlemd5)) {//添加redis set集合去重
                         jedis.sadd("md5title", titlemd5);//不存在则添加
+                        System.out.println("redis written");
                         NewsBean bean = new NewsBean();
                         bean.setAuthor(author);
                         bean.setTitle(title);
