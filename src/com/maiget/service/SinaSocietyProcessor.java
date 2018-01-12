@@ -47,7 +47,6 @@ public class SinaSocietyProcessor implements PageProcessor {
 //            page.addTargetRequest(" http://news.sina.com.cn/c/2018-01-12/doc-ifyqptqv8256803.shtml");
         } else {
             //判断
-            MDao mDao = new MDao();
             try {
                 String title = page.getHtml().xpath("//h1[@class=\"main-title\"]/text()").get();
                 String author = page.getHtml().xpath("//a[@class =\'source\']/text()").get();
@@ -77,6 +76,7 @@ public class SinaSocietyProcessor implements PageProcessor {
 
                             es.insert(bean);
                         } catch (UnknownHostException e) {
+                            MDao mDao = new MDao();
                             int i = mDao.addInfo(bean);
                             if (i > 0) {
                                 System.out.println("insert successed！");

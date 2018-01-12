@@ -38,8 +38,6 @@ public class SinaTechProcessor implements PageProcessor {
 //            page.addTargetRequest("http://tech.sina.com.cn/t/2018-01-12/doc-ifyqnick8697258.shtml");
         } else {
             try {
-
-                MDao dao = new MDao();
                 String title = page.getHtml().xpath("//h1[@class=\"main-title\"]/text()").get();
                 String author = page.getHtml().xpath("//a[@class =\'source ent-source\']/text()").get();
                 if ("".equals(author) && null == author) {
