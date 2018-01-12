@@ -39,47 +39,46 @@ public class SinaTechSeoProcessor implements PageProcessor {
             urlLists = page.getHtml().xpath("//ul[@class=\"seo_data_list\"]").links().regex(POSTURL).all();
             page.addTargetRequests(urlLists);
         } else {
-            try{
-            String author = page.getHtml().xpath("//a[@class =\'source ent-source\']/text()").get();
-            String title = page.getHtml().xpath("//h1/text()").get().toString();
-            String titlemd5 = MD5Util.md5Str(title);
-            String newstime = page.getHtml().xpath("//span[@class =\'date\']/text()").get();
-            if ("".equals(author) || null == author) {
-                author = page.getHtml().xpath("//span[@class =\'source\']/text()").get();
-            }
-            if (!jedis.sismember("md5title", titlemd5)) {
-                jedis.sadd("md5title", titlemd5);
-                if (!(title.isEmpty())
-                        && !(author.isEmpty())) {
-                    NewsBean bean = new NewsBean();
-                    bean.setTitle(page.getHtml().xpath("//h1/text()").get());
-                    bean.setAuthor(author);
-                    try {
-                        bean.setNewstime(DateUtils.dateToStamp(newstime));
-                    } catch (ParseException e) {
-                        bean.setNewstime(String.valueOf(new Date().getTime()));
-                    }
-                    bean.setCategory("科技");
-                    bean.setOrigin("新浪科技");
-                    bean.setContent(page.getHtml().xpath("//div[@id=\'artibody\']").get());
-                    String imgUrl = page.getHtml().xpath("//div[@id=\'artibody\']/div[@class =\'img_wrapper\']").css("img", "src").get();
-                    bean.setImg(imgUrl);
-                    bean.setCreatetime(new Date().getTime());
-                    ESDao es = new ESDao();
-                    try {
-                        es.insert(bean);
-                    } catch (UnknownHostException e) {
-                        MDao mDao = new MDao();
-                        int i = mDao.addInfo(bean);
-                        if (i > 0) {
-                            System.out.println("insert successed！");
-                        } else {
-                            System.out.println("failed！");
+            try {
+                String author = page.getHtml().xpath("//a[@class =\'source ent-source\']/text()").get();
+                String title = page.getHtml().xpath("//h1/text()").get().toString();
+                String newstime = page.getHtml().xpath("//span[@class =\'date\']/text()").get();
+                if ("".equals(author) || null == author) {
+                    author = page.getHtml().xpath("//span[@class =\'source\']/text()").get();
+                }
+                if (!(title == null ) && !(author == null)) {
+                    String titlemd5 = MD5Util.md5Str(title);
+                    if (!jedis.sismember("md5title", titlemd5)) {
+                        jedis.sadd("md5title", titlemd5);
+                        NewsBean bean = new NewsBean();
+                        bean.setTitle(page.getHtml().xpath("//h1/text()").get());
+                        bean.setAuthor(author);
+                        try {
+                            bean.setNewstime(DateUtils.dateToStamp(newstime));
+                        } catch (ParseException e) {
+                            bean.setNewstime(String.valueOf(new Date().getTime()));
+                        }
+                        bean.setCategory("科技");
+                        bean.setOrigin("新浪科技");
+                        bean.setContent(page.getHtml().xpath("//div[@id=\'artibody\']").get());
+                        String imgUrl = page.getHtml().xpath("//div[@id=\'artibody\']/div[@class =\'img_wrapper\']").css("img", "src").get();
+                        bean.setImg(imgUrl);
+                        bean.setCreatetime(new Date().getTime());
+                        ESDao es = new ESDao();
+                        try {
+                            es.insert(bean);
+                        } catch (UnknownHostException e) {
+                            MDao mDao = new MDao();
+                            int i = mDao.addInfo(bean);
+                            if (i > 0) {
+                                System.out.println("insert successed！");
+                            } else {
+                                System.out.println("failed！");
+                            }
                         }
                     }
                 }
-            }
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }

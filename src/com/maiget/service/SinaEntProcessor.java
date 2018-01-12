@@ -45,10 +45,10 @@ public class SinaEntProcessor implements PageProcessor {
                 String title = page.getHtml().xpath("//h1[@class=\"main-title\"]/text()").get();
                 String author = page.getHtml().xpath("//a[@data-sudaclick =\'content_media_p\']/text()").get();
                 String newstime = page.getHtml().xpath("//span[@class =\'date\']/text()").get();
-                String titlemd5 = MD5Util.md5Str(title);
-                if (!jedis.sismember("md5title", titlemd5)) {
-                    jedis.sadd("md5title", titlemd5);
-                    if (!(title.isEmpty()) && !(author.isEmpty())) {
+                if (!(title == null ) && !(author == null)) {
+                    String titlemd5 = MD5Util.md5Str(title);
+                    if (!jedis.sismember("md5title", titlemd5)) {
+                        jedis.sadd("md5title", titlemd5);
                         NewsBean bean = new NewsBean();
                         bean.setTitle(title);
                         bean.setAuthor(author);
@@ -80,7 +80,7 @@ public class SinaEntProcessor implements PageProcessor {
 
                     }
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }

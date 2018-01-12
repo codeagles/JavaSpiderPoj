@@ -43,10 +43,10 @@ public class TechHQProcessor implements PageProcessor {
                 NewsBean bean = new NewsBean();
                 String title = page.getHtml().xpath("//h1/text()").get();
                 String newstime = page.getHtml().xpath("//strong[@class=\"timeSummary\"]/text()").get();
-                String titlemd5 = MD5Util.md5Str(title);
-                if (!jedis.sismember("md5title", titlemd5)) {//添加redis set集合去重
-                    jedis.sadd("md5title", titlemd5);//不存在则添加
-                    if (!title.isEmpty()) {
+                if (!(title == null )) {
+                    String titlemd5 = MD5Util.md5Str(title);
+                    if (!jedis.sismember("md5title", titlemd5)) {//添加redis set集合去重
+                        jedis.sadd("md5title", titlemd5);//不存在则添加
                         bean.setTitle(title);
                         bean.setAuthor("环球科技");
                         bean.setOrigin("环球科技");
