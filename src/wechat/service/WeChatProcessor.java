@@ -87,7 +87,7 @@ public class WeChatProcessor implements PageProcessor {
                 String newstime = page.getHtml().xpath("//div[@id=\'meta_content\']/em[@id=\'post-date\']/text()").get();
                 String content = page.getHtml().xpath("//div[@id=\'js_content\']").get();//不带有头部标题
                 //String content = page.getHtml().xpath("//div[@id=\'img-content\']").get(); //带有头部标题，缺点：多了一堆js代码，优势：可直接当做文章用。
-                content += content.replace("data-src", "src");
+                content = content.replace("data-src", "src");
                 String img = page.getHtml().xpath("//div[@id=\'js_content\']/p").css("img", "data-src").get();
                 if (!(title == null ) && !(author == null)) {
                     String titlemd5 = MD5Util.md5Str(title);
