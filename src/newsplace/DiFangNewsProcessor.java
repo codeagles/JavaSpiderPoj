@@ -78,11 +78,11 @@ public class DiFangNewsProcessor implements PageProcessor {
 
 
     public static void main(String[] args) {
+
         String[] array = {"/hb/", "/ah/", "/bj/", "/fj/", "/gd/", "/gs/", "/gx/", "/gz/", "/ha/", "/he/", "/hi/", "/hlj/", "/hn/", "/jl/", "/js/", "/jx/", "/ln/", "/nx/", "/qh/", "/sc/", "/sd/", "/sh/", "/sn/", "/sx/", "/sz/", "/tj/", "/nmg/", "/yn/", "/zj/"};
 
         for(int i =0;i<array.length;i++){
             Spider.create(new DiFangNewsProcessor()).addUrl("http://difang.gmw.cn"+array[i]).thread(2).run();//抓取页面
-
         }
     }
 
