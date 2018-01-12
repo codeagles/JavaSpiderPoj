@@ -10,6 +10,7 @@ import org.apache.commons.logging.LogFactory;
 import redis.clients.jedis.Jedis;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
+import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.processor.PageProcessor;
 import util.DateUtils;
 import util.MD5Util;
@@ -31,11 +32,11 @@ public class SinaSocietyProcessor implements PageProcessor {
     private static String ENTRYURL = "http://news.sina.com.cn/society/";
     private Jedis jedis = JedisCache.getJedis(CommonVar.HOST);
 
-//	 public static void main(String[] args) {
-//		 Spider.create(new
-//		 SinaSocietyProcessor()).addUrl(ENTRYURL).thread(5).run();
-//		 System.out.println("爬取结束");
-//	 }
+	 public static void main(String[] args) {
+		 Spider.create(new
+		 SinaSocietyProcessor()).addUrl(ENTRYURL).thread(5).run();
+		 System.out.println("爬取结束");
+	 }
 
     @Override
     public void process(Page page) {
@@ -43,6 +44,7 @@ public class SinaSocietyProcessor implements PageProcessor {
         if (page.getUrl().regex(ENTRYREGURL).match()) {
             urlLists = page.getHtml().xpath("//div[@class=\'blk122\']").links().regex(POSTURL).all();
             page.addTargetRequests(urlLists);
+//            page.addTargetRequest(" http://news.sina.com.cn/c/2018-01-12/doc-ifyqptqv8256803.shtml");
         } else {
             //判断
             MDao mDao = new MDao();

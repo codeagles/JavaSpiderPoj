@@ -24,7 +24,6 @@ public class ESDao {
         if (response.isCreated()) {
             System.out.println("ES创建成功!");
         }
-        System.out.println("ES创建成功!");
         client.close();
     }
 }

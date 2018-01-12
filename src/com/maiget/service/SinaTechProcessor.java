@@ -34,8 +34,8 @@ public class SinaTechProcessor implements PageProcessor {
     public void process(Page page) {
         if (page.getUrl().regex(ENTRYREGURL).match()) {
             urlLists = page.getHtml().xpath("//ul[@id=\'rcon1\']").links().regex(POSTURL).all();
-//            page.addTargetRequests(urlLists);
-            page.addTargetRequest("http://tech.sina.com.cn/t/2018-01-12/doc-ifyqnick8697258.shtml");
+            page.addTargetRequests(urlLists);
+//            page.addTargetRequest("http://tech.sina.com.cn/t/2018-01-12/doc-ifyqnick8697258.shtml");
         } else {
             try {
 
