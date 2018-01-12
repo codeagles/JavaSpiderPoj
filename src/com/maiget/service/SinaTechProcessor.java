@@ -37,6 +37,8 @@ public class SinaTechProcessor implements PageProcessor{
 			urlLists = page.getHtml().xpath("//ul[@id=\'rcon1\']").links().regex(POSTURL).all();
 			page.addTargetRequests(urlLists);
 		}else{
+			try{
+
 			MDao dao = new MDao();
 			String title = page.getHtml().xpath("//h1[@class=\"main-title\"]/text()").get();
 			String author = page.getHtml().xpath("//a[@class =\'source ent-source\']/text()").get();
@@ -78,6 +80,10 @@ public class SinaTechProcessor implements PageProcessor{
 						}
 					}
 				}
+			}
+
+			}catch (Exception e){
+				e.printStackTrace();
 			}
 		}
 	}

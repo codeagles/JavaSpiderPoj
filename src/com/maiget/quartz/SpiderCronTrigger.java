@@ -22,7 +22,7 @@ public class SpiderCronTrigger {
 			JobDetail jobDetail = JobBuilder.newJob(SpiderJob.class).withIdentity("job-1", "jgroup-1").build(); 
 			//定义触发器
 			Trigger trigger = TriggerBuilder.newTrigger().withIdentity("cronTrigger", "trigger")
-					.withSchedule(CronScheduleBuilder.cronSchedule("0 */1 * * * ?"))
+					.withSchedule(CronScheduleBuilder.cronSchedule("0 0 0/3 * * ? "))
 		              .startNow()
 		              .build();
 			

@@ -75,6 +75,8 @@ public class WeChatProcessor implements PageProcessor {
             page.addTargetRequests(finalUrlLists);
             System.out.printf("finalUrlLists" + finalUrlLists.size());
         } else {
+            try {
+
             String title = page.getHtml().xpath("//h2[@id=\'activity-name\']/text()").get();
             String author = page.getHtml().xpath("//div[@id=\'meta_content\']/span/text()").get();
             String newstime = page.getHtml().xpath("//div[@id=\'meta_content\']/em[@id=\'post-date\']/text()").get();
@@ -111,6 +113,9 @@ public class WeChatProcessor implements PageProcessor {
                 }
             }
 
+            }catch (Exception e){
+                e.printStackTrace();
+            }
 
         }
     }

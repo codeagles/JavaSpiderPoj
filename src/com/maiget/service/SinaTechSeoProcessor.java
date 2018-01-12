@@ -39,6 +39,7 @@ public class SinaTechSeoProcessor implements PageProcessor {
             urlLists = page.getHtml().xpath("//ul[@class=\"seo_data_list\"]").links().regex(POSTURL).all();
             page.addTargetRequests(urlLists);
         } else {
+            try{
             String author = page.getHtml().xpath("//a[@class =\'source ent-source\']/text()").get();
             String title = page.getHtml().xpath("//h1/text()").get().toString();
             String titlemd5 = MD5Util.md5Str(title);
@@ -77,6 +78,9 @@ public class SinaTechSeoProcessor implements PageProcessor {
                         }
                     }
                 }
+            }
+            }catch (Exception e){
+                e.printStackTrace();
             }
         }
 

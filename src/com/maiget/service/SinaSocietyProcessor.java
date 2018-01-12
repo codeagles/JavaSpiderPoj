@@ -47,43 +47,49 @@ public class SinaSocietyProcessor implements PageProcessor {
 		} else {
 			//判断
 			MDao mDao = new MDao();
-			String title = page.getHtml().xpath("//h1[@class=\"main-title\"]/text()").get().toString();
-			String author = page.getHtml().xpath("//a[@class =\'source\']/text()").get().toString();
-			String newstime = page.getHtml().xpath("//span[@class =\'date\']/text()").get();
-			String titlemd5 = MD5Util.md5Str(title);
-			if(!jedis.sismember("md5title", titlemd5)){
-				jedis.sadd("md5title", titlemd5);
-				System.out.println("redis written");
-				if (!(title.isEmpty()) && !(author.isEmpty())) {
-					NewsBean bean = new NewsBean();
-					bean.setTitle(title);
-					bean.setAuthor(author);
-					try {
-						bean.setNewstime(DateUtils.dateToStamp(newstime));
-					} catch (ParseException e) {
-						bean.setNewstime(String.valueOf(new Date().getTime()));
-					}
-					bean.setCategory("社会");
-					bean.setOrigin("新浪新闻中心");
-					bean.setContent(page.getHtml().xpath("//div[@id=\'article\']").get());
-					String imgUrl = page.getHtml().xpath("//div[@id=\'article\']/div[@class =\'img_wrapper\']")
-							.css("img", "src").get();
-					bean.setImg(imgUrl);
-					bean.setCreatetime(new Date().getTime());
-					ESDao es = new ESDao();
-					try {
-						es.insert(bean);
-					} catch (UnknownHostException e) {
-						int i = mDao.addInfo(bean);
-						if (i > 0) {
-							System.out.println("insert successed！");
-						} else {
-							System.out.println("failed！");
+			try {
+				String title = page.getHtml().xpath("//h1[@class=\"main-title\"]/text()").get().toString();
+				String author = page.getHtml().xpath("//a[@class =\'source\']/text()").get().toString();
+				String newstime = page.getHtml().xpath("//span[@class =\'date\']/text()").get();
+				String titlemd5 = MD5Util.md5Str(title);
+				if (!jedis.sismember("md5title", titlemd5)) {
+					jedis.sadd("md5title", titlemd5);
+					System.out.println("redis written");
+					if (!(title.isEmpty()) && !(author.isEmpty())) {
+						NewsBean bean = new NewsBean();
+						bean.setTitle(title);
+						bean.setAuthor(author);
+						try {
+							bean.setNewstime(DateUtils.dateToStamp(newstime));
+						} catch (ParseException e) {
+							bean.setNewstime(String.valueOf(new Date().getTime()));
+						}
+						bean.setCategory("社会");
+						bean.setOrigin("新浪新闻中心");
+						bean.setContent(page.getHtml().xpath("//div[@id=\'article\']").get());
+						String imgUrl = page.getHtml().xpath("//div[@id=\'article\']/div[@class =\'img_wrapper\']")
+								.css("img", "src").get();
+						bean.setImg(imgUrl);
+						bean.setCreatetime(new Date().getTime());
+						ESDao es = new ESDao();
+						try {
+
+							es.insert(bean);
+						} catch (UnknownHostException e) {
+							int i = mDao.addInfo(bean);
+							if (i > 0) {
+								System.out.println("insert successed！");
+							} else {
+								System.out.println("failed！");
+							}
 						}
 					}
-				}
 
+				}
+			}catch (Exception e){
+				e.printStackTrace();
 			}
+
 		}
 
 	}

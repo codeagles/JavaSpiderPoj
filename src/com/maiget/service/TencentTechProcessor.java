@@ -35,7 +35,7 @@ public class TencentTechProcessor implements PageProcessor {
         } else {
 //			MDao mdao = new MDao();
             ESDao es = new ESDao();
-
+            try {
             String title = page.getHtml().xpath("//h1/text()").get().toString();
             String titlemd5 = MD5Util.md5Str(title);
             String author = page.getHtml().xpath("//span[@class=\'a_source\']/text()").get();
@@ -71,6 +71,10 @@ public class TencentTechProcessor implements PageProcessor {
                     }
 
                 }
+            }
+
+            }catch (Exception e){
+                e.printStackTrace();
             }
         }
     }

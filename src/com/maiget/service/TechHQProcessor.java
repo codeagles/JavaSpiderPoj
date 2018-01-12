@@ -39,40 +39,44 @@ public class TechHQProcessor implements PageProcessor {
             urlList = page.getHtml().xpath("//div[@id=\"active1Con\"]").links().all();
             page.addTargetRequests(urlList);
         } else {
-            NewsBean bean = new NewsBean();
-            String title = page.getHtml().xpath("//h1/text()").get();
-            String newstime = page.getHtml().xpath("//strong[@class=\"timeSummary\"]/text()").get();
-            String titlemd5 = MD5Util.md5Str(title);
-            if (!jedis.sismember("md5title", titlemd5)) {//添加redis set集合去重
-                jedis.sadd("md5title", titlemd5);//不存在则添加
-                if (!title.isEmpty()) {
-                    bean.setTitle(title);
-                    bean.setAuthor("环球科技");
-                    bean.setOrigin("环球科技");
-                    bean.setCategory("科技");
-                    bean.setContent(page.getHtml().xpath("//div[@id=\'text\']").get());
-                    try {
-                        bean.setNewstime(DateUtils.dateToStamp(newstime));
-                    } catch (ParseException e) {
-                        bean.setNewstime(String.valueOf(new Date().getTime()));
-                    }
-                    String imgUrl = page.getHtml().xpath("//div[@id=\'text\']")
-                            .css("img", "src").get();
-                    bean.setCreatetime(new Date().getTime());
-                    bean.setImg(imgUrl);
-                    ESDao es = new ESDao();
-                    try {
-                        es.insert(bean);
-                    } catch (UnknownHostException e) {
-                        MDao mDao = new MDao();
-                        int i = mDao.addInfo(bean);
-                        if (i > 0) {
-                            System.out.println("insert successed！");
-                        } else {
-                            System.out.println("failed！");
+            try {
+                NewsBean bean = new NewsBean();
+                String title = page.getHtml().xpath("//h1/text()").get();
+                String newstime = page.getHtml().xpath("//strong[@class=\"timeSummary\"]/text()").get();
+                String titlemd5 = MD5Util.md5Str(title);
+                if (!jedis.sismember("md5title", titlemd5)) {//添加redis set集合去重
+                    jedis.sadd("md5title", titlemd5);//不存在则添加
+                    if (!title.isEmpty()) {
+                        bean.setTitle(title);
+                        bean.setAuthor("环球科技");
+                        bean.setOrigin("环球科技");
+                        bean.setCategory("科技");
+                        bean.setContent(page.getHtml().xpath("//div[@id=\'text\']").get());
+                        try {
+                            bean.setNewstime(DateUtils.dateToStamp(newstime));
+                        } catch (ParseException e) {
+                            bean.setNewstime(String.valueOf(new Date().getTime()));
+                        }
+                        String imgUrl = page.getHtml().xpath("//div[@id=\'text\']")
+                                .css("img", "src").get();
+                        bean.setCreatetime(new Date().getTime());
+                        bean.setImg(imgUrl);
+                        ESDao es = new ESDao();
+                        try {
+                            es.insert(bean);
+                        } catch (UnknownHostException e) {
+                            MDao mDao = new MDao();
+                            int i = mDao.addInfo(bean);
+                            if (i > 0) {
+                                System.out.println("insert successed！");
+                            } else {
+                                System.out.println("failed！");
+                            }
                         }
                     }
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }
