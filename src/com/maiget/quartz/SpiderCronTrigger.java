@@ -25,7 +25,6 @@ public class SpiderCronTrigger {
 					.withSchedule(CronScheduleBuilder.cronSchedule("0 0 0/3 * * ?"))
 		              .startNow()
 		              .build();
-
 			//把作业和触发器注册到调度器中
 			scheduler.scheduleJob(jobDetail,trigger);
 			//启动触发器
